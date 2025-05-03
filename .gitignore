@@ -1,0 +1,34 @@
+# Build artifacts
+target/
+*.o
+*.a
+*.so
+*.dylib
+*.dll
+*.exe
+*.out
+
+# Object directories
+build/
+bin/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Dependency management (example)
+vendor/
+deps/
+
+# Logs
+*.log
+
+# OS-specific files
+.DS_Store
+Thumbs.db 
+
+# Image output
+iso/

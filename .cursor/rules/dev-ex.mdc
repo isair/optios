@@ -1,0 +1,8 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+The project dependencies should be installable safely via setup scripts at all times. e.g. setup-macos.sh, setup-windows.ps1
+
+The README.md file outlines the design philosophy of the whole operating system project and everything under it. It should at all times have up-to-date instructions on how to use this OS, and how to help development.

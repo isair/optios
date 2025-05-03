@@ -1,0 +1,24 @@
+[package]
+name = "optios"
+version = "0.1.0"
+authors = ["Your Name <you@example.com>"] # TODO: Replace with your info
+edition = "2021"
+
+[dependencies]
+rlibc = "1.0.0"
+bootloader = { version = "0.9.8", features = ["map_physical_memory"] }
+volatile = "0.2.6"
+lazy_static = { version = "1.4.0", features = ["spin_no_std"] }
+spin = "0.5.2"
+x86_64 = "0.14.2"
+
+# Define a binary target instead of a library
+[[bin]]
+name = "optios"
+path = "src/main.rs"
+
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+panic = "abort" 
