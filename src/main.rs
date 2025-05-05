@@ -9,18 +9,18 @@ use core::panic::PanicInfo;
 use bootloader::{entry_point, BootInfo};
 
 mod serial;
+mod interrupts;
 pub mod vga_text;
 
 #[macro_export]
 macro_rules! print {
-    ($($arg:tt)*) => (vga_text::_print(format_args!($($arg)*)));
+    ($($arg:tt)*) => (crate::vga_text::_print(format_args!($($arg)*)));
 }
 
 #[macro_export]
 macro_rules! println {
     () => (print!("\n"));
-    ($($arg:tt)*) => (print!("{}
-", format_args!($($arg)*)));
+    ($($arg:tt)*) => (print!("{}\n", format_args!($($arg)*)));
 }
 
 entry_point!(kernel_entry);
@@ -50,6 +50,13 @@ pub fn kernel_main(_boot_info: &'static BootInfo) -> ! {
 
     println!("OptiOS Booting via Bootloader...");
     print_to_serial(b"OptiOS Booting via Bootloader...");
+
+    println!("Initializing Interrupts...");
+    print_to_serial(b"Initializing Interrupts...");
+    interrupts::init();
+    x86_64::instructions::interrupts::enable();
+    println!("Interrupts enabled.");
+    print_to_serial(b"Interrupts enabled.");
 
     println!("Halting CPU...");
     print_to_serial(b"Halting CPU...");
