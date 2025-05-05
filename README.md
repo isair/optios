@@ -2,16 +2,24 @@
 
 A performance optimised and secure OS by default that can scale from small IOT devices to home PCs.
 
-## Core Philosophy
+OptiOS is an event-driven operating system built around the principle of minimal persistent computation, fast startup, and deterministic state handling. It rethinks background tasks and system processes, while retaining traditional semantics for interactive foreground execution.
 
--   **No Background Processes:** Traditional background tasks are disallowed. Programs execute, complete their task, and terminate.
--   **Restricted Compilation for Handlers:** Programs can compile other, more restricted *handler programs*.
--   **Event-Driven Execution:** The OS executes compiled handler programs based on specific high-level event triggers (e.g., `background-task-tick`, `notification-action`, `screen-frame-capture`, etc.). The OS maintains logs of every event handled and the corresponding handler's output.
--   **Foreground Focus (User Processes):** The system prioritizes the currently active, user-facing task above all else, minimizing context switching and resource contention for *user processes*.
--   **User Process Sandboxing:** User processes operate within a sandboxed environment, restricted to their own designated folder within the filesystem. Access outside this folder requires explicit kernel grants.
--   **Kernel-Managed Permissions:** All system resource access (filesystem, network, hardware, etc.) is governed by a strict, granular permission system managed by the kernel, primarily based on granting handlers the capability to respond to specific events.
+## Core Concepts
 
-This design aims to eliminate overhead associated with traditional multitasking and background processing, dedicating system resources to the task at hand while maintaining security and control through the kernel.
+**Foreground Execution:**
+Foreground user processes run continuously like in traditional OSes. By default, a single foreground process is allowed, but the kernel may be configured (e.g. via a filesystem config) to support multiple concurrent foreground processes depending on the platform’s capabilities.
+
+**Event-Driven Background Handlers:**
+Background work is handled by handlers, which are small programs compiled from user code and triggered by explicit events (like timers, network packets, or app-defined triggers). These handlers run in isolated memory snapshots.
+
+**Snapshot-Based State:**
+Each handler is launched into a memory snapshot that preserves its own global state. Handlers define a version string; any change to this version causes the snapshot to reset. Global variables defined at the top level of the handler file persist between runs, enabling stateful behavior without external storage.
+
+**Run-to-Completion Semantics:**
+Handlers do not block, pause, or yield. They run to completion and terminate. Any required state must be written into snapshot-persistent memory or external files.
+
+**No Background Daemons:**
+There are no idle polling services, message queues, or background daemons. All background computation is explicit, event-bound, and time-scoped.
 
 ## Setup & Building
 
