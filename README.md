@@ -62,31 +62,34 @@ This system enables fine-grained control, secure defaults, and static reasoning 
 
 Building and running OptiOS requires the following:
 
-1.  **Rust Nightly Toolchain:** Install via [rustup](https://rustup.rs/). Run:
-    ```bash
-    rustup install nightly
-    rustup override set nightly
-    # Add the rust-src component needed for libcore on custom targets
-    rustup component add rust-src --toolchain nightly-x86_64-unknown-none 
-    ```
-2.  **x86_64 Cross-Compilation Tools:**
-    *   A cross-compiler (e.g., `x86_64-elf-gcc`, `x86_64-elf-as`, `x86_64-elf-ld`).
-    *   GRUB utilities for the target (e.g., `i686-elf-grub`).
-    *   `xorriso` (for creating the ISO).
-    *   See `setup-macos.sh` or `setup-windows.ps1` (TODO) for specific installation commands.
-3.  **QEMU:** For running the OS (`qemu-system-x86_64`).
+1.  **Rust Nightly Toolchain:** Install via [rustup](https://rustup.rs/).
+    *   Install the Rust `nightly` toolchain if you haven't already:
+        ```bash
+        rustup install nightly
+        ```
+    *   This project uses a `rust-toolchain` file to automatically select the `nightly` toolchain. Once `nightly` is installed, `rustup` will typically use it automatically when you run Rust commands (like `cargo`) within this project. You can verify the active toolchain by running `rustup show` in the project directory.
+    *   Add the `rust-src` component to your nightly toolchain. This is needed to recompile `libcore` (the Rust core library) for custom targets like OptiOS:
+        ```bash
+        # This command adds rust-src to the currently active nightly toolchain.
+        # The setup-macos.sh script automates this. For Linux and Windows, the setup scripts will guide you to install Rustup and then run these Rust commands manually.
+        rustup component add rust-src
+        ```
+2.  **x86_64 Cross-Compiler:**
+    *   `x86_64-elf-gcc` is required. It is typically used by Rust as a linker for bare-metal targets. The associated tools like `x86_64-elf-as` and `x86_64-elf-ld` are usually included with it.
+    *   The `setup-macos.sh` and `setup-linux.sh` scripts attempt to install this tool. The `setup-windows.ps1` script provides manual instructions for its installation.
+3.  **QEMU:** For running the OS (`qemu-system-x86_64`). The provided setup scripts for macOS, Linux, and Windows attempt to install QEMU if it's not already present.
 
 ### Setup Scripts
 
 Convenience scripts are provided for setting up dependencies:
 
 *   **macOS:** `./setup-macos.sh` (Installs via Homebrew)
-*   **Windows:** (TODO: Create `setup-windows.ps1`)
-*   **Linux (Debian/Ubuntu):** (TODO: Create `setup-linux.sh`)
+*   **Windows:** `./setup-windows.ps1`
+*   **Linux (Debian/Ubuntu):** `./setup-linux.sh`
 
 ### Building
 
-Once prerequisites are installed, build the kernel and ISO image:
+Once prerequisites are installed, build the kernel:
 
 ```bash
 make all
