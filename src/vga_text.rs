@@ -118,6 +118,10 @@ impl Writer {
             }
         }
     }
+
+    pub fn set_color(&mut self, foreground: Color, background: Color) {
+        self.color_code = ColorCode::new(foreground, background);
+    }
 }
 
 // --- Formatting Macro Support ---
@@ -142,6 +146,11 @@ lazy_static! {
 pub fn _print(args: fmt::Arguments) { // Ensure pub
     use core::fmt::Write;
     WRITER.lock().write_fmt(args).unwrap();
+}
+
+/// Sets the foreground and background colors for subsequent prints.
+pub fn set_text_color(foreground: Color, background: Color) {
+    WRITER.lock().set_color(foreground, background);
 }
 
 /// Writes a raw byte slice directly (simple version, less safe)

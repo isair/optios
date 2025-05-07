@@ -46,11 +46,18 @@ pub fn kernel_main(_boot_info: &'static BootInfo) -> ! {
     print_to_serial(b"Serial Initialized (from kernel_main).");
 
     vga_text::clear_screen();
+
+    // Set color for "VGA Initialized."
+    vga_text::set_text_color(vga_text::Color::LightGreen, vga_text::Color::Black);
     println!("VGA Initialized.");
 
+    // Set color for "OptiOS Booting via Bootloader..."
+    vga_text::set_text_color(vga_text::Color::LightCyan, vga_text::Color::Black);
     println!("OptiOS Booting via Bootloader...");
     print_to_serial(b"OptiOS Booting via Bootloader...");
 
+    // Set color for "Halting CPU..." (back to original or a new one)
+    vga_text::set_text_color(vga_text::Color::Yellow, vga_text::Color::Black);
     println!("Halting CPU...");
     print_to_serial(b"Halting CPU...");
     halt_loop();
