@@ -10,6 +10,7 @@ use bootloader::{entry_point, BootInfo};
 
 mod serial;
 pub mod vga_text;
+mod rtc;
 
 #[macro_export]
 macro_rules! print {
@@ -45,20 +46,43 @@ pub fn kernel_main(_boot_info: &'static BootInfo) -> ! {
     initialize_serial();
     print_to_serial(b"Serial Initialized (from kernel_main).");
 
-    vga_text::clear_screen();
+    // Set a global background color to Black and default foreground to LightGray
+    vga_text::set_text_color(vga_text::Color::LightGray, vga_text::Color::Black);
+    vga_text::clear_screen(); // Clear screen with new background
 
-    // Set color for "VGA Initialized."
+    // Futuristic Welcome Header (using simpler ASCII for compatibility)
+    vga_text::set_text_color(vga_text::Color::LightBlue, vga_text::Color::Black);
+    println!("+--------------------------------------------------------------+");
+    println!("|                                                              |");
+    vga_text::set_text_color(vga_text::Color::White, vga_text::Color::Black);
+    println!("|                Welcome to OptiOS v0.1.0                      |");
+    vga_text::set_text_color(vga_text::Color::LightBlue, vga_text::Color::Black);
+    println!("|                                                              |");
+    println!("+--------------------------------------------------------------+");
+    println!(); // Empty line for spacing
+
+    // Display current time
+    let datetime = rtc::get_datetime();
     vga_text::set_text_color(vga_text::Color::LightGreen, vga_text::Color::Black);
-    println!("VGA Initialized.");
+    println!(
+        "    System Time: {}-{:02}-{:02} {:02}:{:02}:{:02}",
+        datetime.year, datetime.month, datetime.day,
+        datetime.hour, datetime.minute, datetime.second
+    );
+    println!(); // Empty line for spacing
 
-    // Set color for "OptiOS Booting via Bootloader..."
-    vga_text::set_text_color(vga_text::Color::LightCyan, vga_text::Color::Black);
-    println!("OptiOS Booting via Bootloader...");
-    print_to_serial(b"OptiOS Booting via Bootloader...");
+    // Boot messages
+    vga_text::set_text_color(vga_text::Color::Cyan, vga_text::Color::Black);
+    println!("    VGA Display Initialized.");
+    println!("    Bootloader sequence complete.");
+    println!("    Initializing kernel modules...");
+    
+    print_to_serial(b"OptiOS Booting via Bootloader..."); // Serial logs can remain as is
 
-    // Set color for "Halting CPU..." (back to original or a new one)
-    vga_text::set_text_color(vga_text::Color::Yellow, vga_text::Color::Black);
-    println!("Halting CPU...");
+    // Final message before halt
+    vga_text::set_text_color(vga_text::Color::Pink, vga_text::Color::Black);
+    println!();
+    println!("    System Core Halting. CPU going to sleep.");
     print_to_serial(b"Halting CPU...");
     halt_loop();
 }
