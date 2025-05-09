@@ -1,0 +1,11 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+The system events that can trigger a background handler program are as below.
+
+No background program may execute longer than the time configured within the kernel (default 5 minutes).
+
+Events:
+- **background-schedule** - Triggers every 15 mintues.

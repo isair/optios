@@ -23,6 +23,18 @@ else
     echo "QEMU (qemu-system-x86_64) already installed."
 fi
 
+# OVMF (UEFI firmware for QEMU)
+if ! dpkg -s ovmf >/dev/null 2>&1 && ! dpkg -s edk2-ovmf >/dev/null 2>&1; then
+    echo "Installing OVMF (UEFI firmware for QEMU)..."
+    # Try 'ovmf' first, common on many systems. 'edk2-ovmf' is another name.
+    if ! apt install -y ovmf; then 
+        echo "'ovmf' package failed or not found, trying 'edk2-ovmf'..."
+        apt install -y edk2-ovmf
+    fi
+else
+    echo "OVMF package (ovmf or edk2-ovmf) already installed."
+fi
+
 # x86_64 cross-compiler
 if ! command -v x86_64-elf-gcc &> /dev/null; then
     echo "Installing x86_64-elf-gcc cross-compiler..."
@@ -34,12 +46,21 @@ fi
 echo ""
 echo "System dependencies installed."
 echo "--------------------------------------------------------------------------------"
-echo "NEXT STEPS: Install Rust and components (as your regular user, not root):"
-echo "1. Install Rustup (if you don't have it):"
-echo "   curl --proto \'=https\' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y"
-echo "   Follow instructions to add .cargo/bin to your PATH (e.g., source \$HOME/.cargo/env). You may need to restart your terminal."
-echo "2. Install Nightly toolchain and rust-src component:"
-echo "   rustup install nightly"
-echo "   rustup component add rust-src"
+echo "NEXT STEPS:"
+echo "1. Ensure OVMF files are accessible:"
+echo "   This script attempted to install OVMF. The 'make run' command expects"
+echo "   'OVMF_CODE.fd' and 'OVMF_VARS.fd' to be in the 'qemu-testing/' directory"
+echo "   at the root of your project. 'make run' will no longer try to copy them itself."
+echo "   Common locations for these files after installation are '/usr/share/OVMF/' or"
+echo "   '/usr/share/edk2-ovmf/x64/'. If 'make run' fails to find them, please copy"
+echo "   them manually: cp /usr/share/OVMF/*.fd qemu-testing/ (adjust path if needed)."
+echo ""
+echo "2. Install Rust and components (as your regular user, not root):"
+echo "   Install Rustup (if you don't have it):"
+echo "     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y"
+echo "     Follow instructions to add .cargo/bin to your PATH. You may need to restart your terminal."
+echo "   Install Nightly toolchain and rust-src component:"
+echo "     rustup install nightly"
+echo "     rustup component add rust-src"
 echo "--------------------------------------------------------------------------------"
 echo "Linux setup script complete!" 

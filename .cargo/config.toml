@@ -1,8 +1,8 @@
 [build]
-target = "x86_64-optios.json"
+target = "x86_64-unknown-uefi"
 
-[target.x86_64-optios]
-runner = ["bootimage", "runner"]
+# [target.x86_64-optios] # Removed
+# runner = ["bootimage", "runner"] # Removed
 
 [unstable]
 build-std-features = ["compiler-builtins-mem"]

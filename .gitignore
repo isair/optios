@@ -32,3 +32,6 @@ Thumbs.db
 
 # Image output
 iso/
+
+# QEMU testing files
+qemu-testing/
